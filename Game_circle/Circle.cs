@@ -15,10 +15,11 @@ namespace Game_circle
         public int Y { get { return y; } set { y = value; } }
         public int R { get { return r; } set { r = value; } }
 
-        public Circle(int x, int y)
+        public Circle(int x, int y, int r = 20)
         {
             this.x = x;
             this.y = y;
+            this.r = r;
         }
     }
 }

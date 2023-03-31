@@ -30,6 +30,12 @@ namespace Game_circle
         {
             if (onClick) painter.addRectangle(e);
             onClick = false;
+            painter.moving();
         }
-    }
+
+		private void Form1_Load(object sender, EventArgs e)
+		{
+            
+		}
+	}
 }
