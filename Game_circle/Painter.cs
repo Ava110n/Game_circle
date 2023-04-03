@@ -44,7 +44,8 @@ namespace Game_circle
 
         public Painter(Graphics g)
         {
-            this.g = g;
+            this.G = g;
+            //bg = BufferedGraphicsManager.Current.Allocate(g, p);
         }
 
         public void addRectangle(MouseEventArgs e)
@@ -77,8 +78,9 @@ namespace Game_circle
         }
 
 
-        private void draw()
+        public void draw()
         {
+            bg.Graphics.Clear(Color.White);
             //var count = rects.Count + animators.Count;
             if (bg != null)
             {
