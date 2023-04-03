@@ -18,7 +18,7 @@ namespace Game_circle
 
         private void mainPanel_Paint(object sender, PaintEventArgs e)
         {
-            painter.draw();
+            //painter.draw();
         }
 
         private void mainPanel_Click(object sender, EventArgs e)
@@ -30,7 +30,7 @@ namespace Game_circle
         {
             if (onClick) painter.addRectangle(e);
             onClick = false;
-            painter.moving();
+            painter.show();
         }
 
 		private void Form1_Load(object sender, EventArgs e)

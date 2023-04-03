@@ -9,7 +9,7 @@ namespace Game_circle
     internal class Animator
     {
         public Circle _circle;
-        private int dx, dy;
+        private int dx = 1, dy=1;
         private Size containerSize;
         Thread? t = null;
 

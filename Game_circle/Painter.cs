@@ -23,10 +23,7 @@ namespace Game_circle
             get { return containerSize; }
             set {
                 //Rectangle p = new Rectangle(0, 0, Convert.ToInt32(g.VisibleClipBounds.Width), Convert.ToInt32(g.VisibleClipBounds.Height));
-                containerSize = value;
-
-                Rectangle p = new Rectangle(new Point(0, 0), containerSize);
-                bg = BufferedGraphicsManager.Current.Allocate(g, p);        
+                containerSize = value;      
             }
         }
 
@@ -35,10 +32,14 @@ namespace Game_circle
             get { return g; }
 			set
 			{
-                g = value;
-                containerSize = g.ClipBounds.Size.ToSize();
-                Rectangle p = new Rectangle(new Point(0, 0), containerSize);
-                bg = BufferedGraphicsManager.Current.Allocate(g, p);
+                //lock (locker)
+                //{
+                    g = value;
+                    //ContainerSize = g.ClipBounds.Size.ToSize();
+                    ContainerSize=g.VisibleClipBounds.Size.ToSize();
+                    Rectangle p = new Rectangle(new Point(0, 0), containerSize);
+                    bg = BufferedGraphicsManager.Current.Allocate(g, p);
+                //}
             }
 		}
 
@@ -65,38 +66,81 @@ namespace Game_circle
             animators.Add(anim);
         }
 
+        public void show()
+        {
+            Thread t = new Thread(new ThreadStart(moving));
+            t.Start();
+            //t.Abort();
+        }
+
         public void moving()
 		{
             while (true)
             {
                 draw();
-                foreach (var animator in animators)
+                int count = animators.Count;
+                if (count > 0)
                 {
-                    animator.Move();
+                    foreach (var animator in animators.ToList())
+                    {
+                        animator.Move();
+                        if (AsAlive(animator) == false)
+                        {
+                            try
+                            {
+                                //Thread.CurrentThread.Interrupt();
+                                Thread.CurrentThread.Abort();
+                            }
+                            catch
+                            {
+
+                            }
+                        }
+                    }
                 }
             }
+            
+        }
+
+        private bool AsAlive(Animator animator)
+        {
+            int x = animator._circle.X;
+            int y = animator._circle.Y;
+            int r = animator._circle.R;
+            if (x+r<0 || x - r > containerSize.Width)
+            {
+                animators.Remove(animator);
+                return false;
+            }
+            if (y + r < 0 || y - r > containerSize.Height)
+            {
+                animators.Remove(animator);
+                return false;
+            }
+            return true;
         }
 
 
         public void draw()
         {
-            bg.Graphics.Clear(Color.White);
+           
             //var count = rects.Count + animators.Count;
-            if (bg != null)
+            lock(locker)
             {
                 bg.Graphics.Clear(Color.White);
-                foreach (var animator in animators)
+                foreach (var animator in animators.ToList())
                 {
                     int r = animator._circle.R;
                     bg.Graphics.DrawEllipse(pen, animator._circle.X - r, animator._circle.Y - r, 2 * r, 2 * r);
                 }
-                foreach (var rect in rects)
+                foreach (var rect in rects.ToList())
                 {
                     bg.Graphics.DrawRectangle(pen, rect.X - rect.Side / 2, rect.Y - rect.Side / 2, rect.Side, rect.Side);
 
                 }
                 bg.Render();
             }
+            //Thread.Sleep(100);
         }
 
 
