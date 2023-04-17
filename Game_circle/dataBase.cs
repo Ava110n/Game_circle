@@ -14,7 +14,7 @@ namespace Game_circle
 
 		public dataBase()
 		{
-			MySqlConnection connection = new MySqlConnection("Server=localhost;User ID=root;Password=;Database=db-107");
+			MySqlConnection connection = new MySqlConnection("Server=localhost;User ID=root;Password=root;Database=db-107");
 			connection.Open();
 			MySqlCommand cmd = new MySqlCommand();
 			cmd.CommandText = "CREATE TABLE IF NOT EXISTS `Score` (" +

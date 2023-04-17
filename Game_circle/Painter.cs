@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,7 +11,7 @@ namespace Game_circle
     {
         private List<Square> rects = new List<Square>();
         private List<Animator> animators = new List<Animator>();
-        Thread? t = null;
+        Thread? t0 = null;
         private Graphics g;
         private BufferedGraphics bg;
         object locker = new object();
@@ -55,7 +56,16 @@ namespace Game_circle
             rects.Add(rect);
 
             //g.DrawRectangle(pen, rect.X - rect.Side / 2, rect.Y - rect.Side / 2, rect.Side, rect.Side);
+            //while(true) {
             circlePaint(e);
+            //Thread.Sleep(1000);
+            //}
+
+            var t = new Thread(() => addNewCircle(rect.X, rect.Y));
+            t.Start();
+            //return t;
+            //t.Start();
+
         }
 
         public void circlePaint(MouseEventArgs e)
@@ -66,18 +76,43 @@ namespace Game_circle
             animators.Add(anim);
         }
 
+        public void circlePaint(int x, int y)
+        {
+            Circle c = new Circle(x, y);
+            //g.DrawEllipse(pen, c.X- c.R, c.Y- c.R, c.R*2, c.R*2);
+            Animator anim = new Animator(c, ContainerSize);
+            animators.Add(anim);
+        }
+
+        public void addNewCircle(int x, int y)
+        {
+            while (true)
+            {
+                //int count = rects.Count;
+                Thread.Sleep(3000);
+                //foreach (var rect in rects)
+                //{
+                circlePaint(x, y);
+                //}
+            }
+        }
+
         public void show()
         {
             Thread t = new Thread(new ThreadStart(moving));
             t.Start();
+            //t0 = new Thread(new ThreadStart(addNewCircle));
+            //t0.Start();
             //t.Abort();
         }
 
         public void moving()
 		{
+            
             while (true)
             {
                 draw();
+                
                 int count = animators.Count;
                 if (count > 0)
                 {
@@ -96,6 +131,7 @@ namespace Game_circle
 
                             }
                         }
+                        //addNewCircle();
                     }
                 }
             }
@@ -127,6 +163,7 @@ namespace Game_circle
             //var count = rects.Count + animators.Count;
             lock(locker)
             {
+                
                 bg.Graphics.Clear(Color.White);
                 foreach (var animator in animators.ToList())
                 {
@@ -139,8 +176,10 @@ namespace Game_circle
 
                 }
                 bg.Render();
+                Thread.Sleep(100);
             }
-            //Thread.Sleep(100);
+            
+
         }
 
 

@@ -19,6 +19,7 @@ namespace Game_circle
         private void mainPanel_Paint(object sender, PaintEventArgs e)
         {
             //painter.draw();
+            //int x = 3;
         }
 
         private void mainPanel_Click(object sender, EventArgs e)
